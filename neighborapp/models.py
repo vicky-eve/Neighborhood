@@ -23,9 +23,15 @@ class Neighborhood(models.Model):
         
     def update_neighborhood(self):
         self.update()
+
     def update_occupants(self):
         self.update()
 
     @classmethod
     def find_neighborhood(cls, neighborhood_id):
         return cls.objects.filter(id=neighborhood_id)
+
+class Business(models.Model):
+    name = models.TextField(max_length=100)
+    email_address = models.EmailField(max_length=100)
+    neighborhood = models.ForeignKey(Neighborhood, on_delete=models.CASCADE, related_name='neighborhood')
