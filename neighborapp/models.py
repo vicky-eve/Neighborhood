@@ -32,6 +32,26 @@ class Neighborhood(models.Model):
         return cls.objects.filter(id=neighborhood_id)
 
 class Business(models.Model):
-    name = models.TextField(max_length=100)
+    biz_name = models.TextField(max_length=100)
     email_address = models.EmailField(max_length=100)
     neighborhood = models.ForeignKey(Neighborhood, on_delete=models.CASCADE, related_name='neighborhood')
+
+    def __str__(self):
+        return f'{self.biz_name} Business'
+
+    def create_business(self):
+        self.save()
+
+    def delete_business(self):
+        self.delete()
+
+    def update_neighborhood(self):
+        self.update()
+
+    @classmethod
+    def find_business(cls, business_id):
+        return cls.objects.filter(id=business_id)
+
+    @classmethod
+    def search_business(cls, name):
+        return cls.objects.filter(name__icontains=name).all()
