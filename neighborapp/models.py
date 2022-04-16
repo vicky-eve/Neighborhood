@@ -55,3 +55,10 @@ class Business(models.Model):
     @classmethod
     def search_business(cls, name):
         return cls.objects.filter(name__icontains=name).all()
+
+class Profile(models.Model):
+    username =models.TextField(max_length=100)
+    about = models.TextField(max_length=500)
+    gen_location = models.TextField(max_length=100)
+    nei_name = models.TextField(max_length=100)
+    
