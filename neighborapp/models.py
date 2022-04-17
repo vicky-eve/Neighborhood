@@ -69,6 +69,7 @@ class Profile(models.Model):
 class Post(models.Model):
     image = CloudinaryField('images', null=True)
     title = models.CharField(max_length=120, null=True)
+    content = models.CharField(max_length=400,null=True)
     date = models.DateTimeField(auto_now_add=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner')
     neighbourhood = models.ForeignKey(Neighborhood, on_delete=models.CASCADE, related_name='neighborhood')
