@@ -240,3 +240,82 @@ def business(request):
         neighborhood = profile.neighborhood
         businesses = Business.objects.all().order_by('-id')
         return render(request, "business.html", {"businesses": businesses})
+
+@login_required(login_url='/accounts/login/')
+def create_neighborhood(request):
+    current_user = request.user
+    if request.method == 'POST':  
+        form = NeighborhoodForm(request.POST, request.FILES)
+        if form.is_valid():
+            commit = form.save(commit=False)
+            commit.user = request.user
+            commit.save()
+            return redirect('index')
+    
+    else:
+        form = NeighborhoodForm() 
+    return render (request, 'hood_form.html', {'form':form, 'current_user':current_user})
+
+@login_required(login_url="/accounts/login/")
+def hood(request):
+    current_user = request.user
+    hood = Neighborhood.objects.all().order_by('-id')
+    return render(request, 'hoods.html', {'hood': hood,'current_user':current_user})
+
+@login_required(login_url='/accounts/login/')
+def one_hood(request,name):
+    current_user = request.user
+    hood = Neighborhood.objects.get(name=name)
+    profiles = Profile.objects.filter(neighborhood=hood)
+    businesses = Business.objects.filter(neighborhood=hood)
+    posts = Post.objects.filter(neighborhood=hood)
+    request.user.profile.neighborhood = hood
+    request.user.profile.save()
+    
+    return render(request,'one_hood.html',{'hood': hood,'businesses':businesses,'posts':posts,'current_user':current_user,'profiles':profiles})
+
+login_required(login_url="/accounts/login/")
+def create_post(request):
+    current_user = request.user
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.hood = hood
+            post.user=current_user
+            post.save()
+            return redirect('index')
+    else:
+        form = PostForm()
+    return render(request, 'post.html', {'form': form})
+
+
+login_required(login_url="/accounts/login/")
+def post(request):
+    current_user = request.user
+    profile = Profile.objects.filter(user_id=current_user.id).first()
+    posts = Post.objects.all().order_by('-id')
+    if profile is None:
+        profile = Profile.objects.filter(
+            user_id=current_user.id).first() 
+        posts = Post.objects.all().order_by('-id')
+        neighborhood = Neighborhood.objects.all()
+        businesses = Business.objects.filter(user_id=current_user.id)
+        
+        return render(request, "profile.html", {"danger": "Update Profile ", "neighborhood": neighborhood,  "businesses": businesses,"posts": posts})
+    else:
+        neighborhood = profile.neighborhood
+        posts = Post.objects.all().order_by('-id')
+        return render(request, "posts.html", {"posts": posts})
+
+@login_required(login_url="/accounts/login/")
+def search(request):
+    if 'search_term' in request.GET and request.GET["search_term"]:
+        search_term = request.GET.get("search_term")
+        searched_businesses = Business.objects.filter(name__icontains=search_term)
+        message = f"Search For: {search_term}"
+
+        return render(request, "search.html", {"message": message, "businesses": searched_businesses})
+    else:
+        message = "You haven't searched for any term"
+        return render(request, "search.html", {"message": message})
