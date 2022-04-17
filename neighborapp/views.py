@@ -7,8 +7,8 @@ from rest_framework.views import APIView
 from .serializer import ProfileSerializer, NeighborhoodSerializer, BusinessSerializer, PostSerializer
 from rest_framework import status
 from .permissions import IsAdminOrReadOnly
-from django.http import Http404
-from.forms import RegistrationForm, UploadProjectForm, UpdateProfileForm, ProjectForm
+from django.http import HttpResponse, HttpResponseRedirect, Http404
+from.forms import RegistrationForm, UpdateProfileForm
 from django.contrib import messages
 
 
@@ -205,4 +205,38 @@ def update_profile(request,id):
                 return redirect('profile') 
             
     return render(request, 'registration/update_profile.html', {"form":form, "profile":profile, 'id':id})
- 
+
+@login_required(login_url='/accounts/login/')
+def create_business(request):
+    business = Business.objects.all().order_by('-id')
+    if request.method == 'POST':  
+        form = BusinessForm(request.POST, request.FILES)
+        if form.is_valid():
+            commit = form.save(commit=False)
+            commit.user = request.user
+            commit.save()
+            return redirect('index')
+    
+    else:
+        form = BusinessForm() 
+    return render (request, 'create_biz.html', {'form':form, 'business':business})
+
+@login_required(login_url="/accounts/login/")
+def business(request):
+    current_user = request.user
+    profile = Profile.objects.filter(user_id=current_user.id).first()
+    businesses = Business.objects.all().order_by('-id')
+
+    if profile is None:
+        profile = Profile.objects.filter(
+            user_id=current_user.id).first()
+        businesses = Business.objects.all().order_by('-id')
+        neighborhood = Neighborhood.objects.all()
+        
+        
+        
+        return render(request, "registration/profile.html", {"danger": "Update Profile","neighborhood": neighborhood, "businesses": businesses})
+    else:
+        neighborhood = profile.neighborhood
+        businesses = Business.objects.all().order_by('-id')
+        return render(request, "business.html", {"businesses": businesses})
