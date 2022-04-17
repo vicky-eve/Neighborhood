@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from neighborapp.models import Neighborhood, Profile, Business, Post
+from neighborapp.models import Neighborhood, Profile, Business, Post, User
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializer import ProfileSerializer, NeighborhoodSerializer, BusinessSerializer, PostSerializer
@@ -193,4 +193,16 @@ def profile(request):
     profile = Profile.objects.filter(user_id=current_user.id).first()
     return render(request, 'registration/profile.html', {"profile":profile})
 
+def update_profile(request,id):
+    user = User.objects.get(id=id)
+    profile = Profile.objects.get(user_id = user)
+    form = UpdateProfileForm(instance=profile)
+    if request.method == "POST":
+            form = UpdateProfileForm(request.POST,request.FILES,instance=profile)
+            if form.is_valid():  
+                profile = form.save(commit=False)
+                profile.save()
+                return redirect('profile') 
+            
+    return render(request, 'registration/update_profile.html', {"form":form, "profile":profile, 'id':id})
  
