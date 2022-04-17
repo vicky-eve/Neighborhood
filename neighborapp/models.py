@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from phone_field import PhoneField
-
+from cloudinary.models import CloudinaryField
 
 # Create your models here.
 class Neighborhood(models.Model):
@@ -10,7 +10,7 @@ class Neighborhood(models.Model):
     admin = models.ForeignKey(User, on_delete=models.CASCADE, related_name="hood",null=True)
     health_contact = PhoneField(null=True, blank=True)
     police_contact = PhoneField(null=True, blank=True)
-
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')
     
     def __str__(self):
         return f'{self.name} hood'
@@ -35,7 +35,8 @@ class Business(models.Model):
     biz_name = models.TextField(max_length=100)
     email_address = models.EmailField(max_length=100)
     neighborhood = models.ForeignKey(Neighborhood, on_delete=models.CASCADE, related_name='neighborhood')
-
+    contact = PhoneField(null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')
     def __str__(self):
         return f'{self.biz_name} Business'
 
@@ -45,7 +46,7 @@ class Business(models.Model):
     def delete_business(self):
         self.delete()
 
-    def update_neighborhood(self):
+    def update_business(self):
         self.update()
 
     @classmethod
@@ -61,4 +62,14 @@ class Profile(models.Model):
     about = models.TextField(max_length=500)
     gen_location = models.TextField(max_length=100)
     nei_name = models.TextField(max_length=100)
-    
+
+    def update_profile(self):
+        self.update()
+
+class Post(models.Model):
+    image = CloudinaryField('images', null=True)
+    title = models.CharField(max_length=120, null=True)
+    date = models.DateTimeField(auto_now_add=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner')
+    neighbourhood = models.ForeignKey(Neighborhood, on_delete=models.CASCADE, related_name='neighborhood')
+
