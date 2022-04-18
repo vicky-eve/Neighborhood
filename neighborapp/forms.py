@@ -6,7 +6,7 @@ from django import forms
 class UpdateProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ('username','about', 'gen_location','nei_name') 
+        fields = ('username','about','profile_pic', 'gen_location','nei_name') 
 
 class BusinessForm(forms.ModelForm):
     class Meta:
