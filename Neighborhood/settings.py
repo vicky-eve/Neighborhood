@@ -21,7 +21,7 @@ from decouple import config,Csv
 import os
 
 MODE=config("MODE", default="dev")
-SECRET_KEY = config('django-insecure--d$9yhje3$$9schjr3)b%fpr76l3#g1hg^sjvl1*l)r5h&()sy')
+SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 # development
 if config('MODE')=="dev":
