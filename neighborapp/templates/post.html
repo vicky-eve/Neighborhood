@@ -1,0 +1,25 @@
+{%extends 'base.html'%} 
+{% load bootstrap5%}
+{%block content%}
+<style>
+    body{
+        font-family: 'Lato', global_font_string;
+        font-weight: 500;
+        background-color: black;
+        color: white;}
+</style>
+<body>
+<div class="col-md-6">
+    <div id="regis">
+        <div class="form-data">
+            <h2 class="intro">New Post</h2>
+            <form action="{%url 'create_post'%}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% bootstrap_form form %}
+                <button class="btn btn-warning" type="submit">Upload</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+{% endblock content %}
