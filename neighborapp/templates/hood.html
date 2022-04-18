@@ -1,0 +1,48 @@
+{%extends 'base.html'%} 
+{% load bootstrap5%}
+{%block content%}
+<style>
+    .image{
+       
+       width: 350px;
+       height: 200px;
+    }
+    .hood{
+        margin-top: 5%;
+        margin-bottom: 5%;
+        
+    }
+</style>
+<div class="container hood">
+    <div class="text-center mb-3">
+        <a href="{%url 'create_neighborhood'  %}"  class="btn btn-outline-info bg-info text-white rounded-pill">
+         New neighborhood
+        </a>
+    </div>
+    <div class="row">
+        {% for neighborhood in neighborhoods %}
+        <div class="col-md-4">
+            
+          <img src="{{neighborhood.photo.url}}" alt="" class="image" >
+            
+            <h3 class="name">{{neighborhood.name}} , {{ neighborhood.location }}</h3>
+            <p>{{neighborhood.members.count}} Member{{neighborhood.members.count|pluralize}}</p>
+            
+     
+            
+           <div class="join mb-3">
+            {% if request.user.profile.neighborhood == neighborhood %}
+           
+            
+            <a href="{%url 'one_hood' neighborhood.name %}" class="btn btn-outline-success btn-sm" style="float: right">Explore {{neighborhood.name}}
+          </a>
+            {% elif not request.user.profile.neighborhood %}
+            <a href="{% url 'one_hood' neighborhood.name %}" class="btn btn-info btn-sm">Join</a>
+            {% endif %}
+           </div>
+        </div>
+        
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
