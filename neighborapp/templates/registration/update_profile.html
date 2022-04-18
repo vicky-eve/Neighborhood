@@ -1,0 +1,17 @@
+{%extends 'base.html'%}
+{% load static %}
+{% load bootstrap5 %}
+{% block content %}
+<div class="box">
+    <div class="text-center">
+    <div class="title">Edit Profile</div>
+    <hr>
+    <div class="guide">Fill in your details</div>
+    </div>
+    <form action="{% url 'update_profile' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}    
+        {% bootstrap_form form %}
+        <input type="submit" class="btn btn-dark " value="Create Profile">
+    </form>
+</div>
+{% endblock %}
