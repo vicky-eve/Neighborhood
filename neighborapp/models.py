@@ -7,10 +7,12 @@ from cloudinary.models import CloudinaryField
 class Neighborhood(models.Model):
     name = models.TextField(max_length=100)
     location = models.CharField(max_length=100)
+    photo = CloudinaryField('images', null=True)
     admin = models.ForeignKey(User, on_delete=models.CASCADE, related_name="hood",null=True)
+    occupants_count = models.IntegerField(default=0,blank=True, null=True)
     health_contact = PhoneField(null=True, blank=True)
     police_contact = PhoneField(null=True, blank=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')
+    user = models.ForeignKey(User, on_delete=models.CASCADE,null = True, related_name='user')
     
     def __str__(self):
         return f'{self.name} hood'
@@ -32,11 +34,11 @@ class Neighborhood(models.Model):
         return cls.objects.filter(id=neighborhood_id)
 
 class Business(models.Model):
-    biz_name = models.TextField(max_length=100)
-    email_address = models.EmailField(max_length=100)
+    biz_name = models.TextField(max_length=100, null=True)
+    email_address = models.EmailField(max_length=100, null=True)
     neighborhood = models.ForeignKey(Neighborhood, on_delete=models.CASCADE, related_name='neighborhood')
     contact = PhoneField(null=True, blank=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_biz')
     def __str__(self):
         return f'{self.biz_name} Business'
 
@@ -60,11 +62,16 @@ class Business(models.Model):
 class Profile(models.Model):
     username =models.TextField(max_length=100)
     about = models.TextField(max_length=500)
+    profile_pic = CloudinaryField('images', null=True)
     gen_location = models.TextField(max_length=100)
     nei_name = models.TextField(max_length=100)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
 
     def update_profile(self):
         self.update()
+
+    def __str__(self):
+        return f'{self.username} Profile'
 
 class Post(models.Model):
     image = CloudinaryField('images', null=True)
@@ -72,5 +79,7 @@ class Post(models.Model):
     content = models.CharField(max_length=400,null=True)
     date = models.DateTimeField(auto_now_add=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner')
-    neighbourhood = models.ForeignKey(Neighborhood, on_delete=models.CASCADE, related_name='neighborhood')
+    neighbourhood = models.ForeignKey(Neighborhood, on_delete=models.CASCADE, related_name='neighbourhood')
 
+    def __str__(self):
+        return f'{self.image} Post'
