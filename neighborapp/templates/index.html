@@ -1,0 +1,108 @@
+{%extends 'base.html'%}
+{% load bootstrap5 %}
+{%block content%}
+<style>
+    .trial {
+      display: flex;
+      flex-direction: row;
+    }
+  
+    .img img {
+      width: 300px;
+      height: 300px;
+     
+    }
+    body{
+      overflow-x: hidden;
+      padding-left:50px;
+      padding-right: 50px;
+    }
+  </style>
+<body style="background-color:darkgrey;" >
+    <div class="container-fluid text-center" >
+      <h1 class="">NEIGHBORHOOD</h1>
+      <h3>Welcome to Neighborhood, where you get to choose your community according to your preference.</h3>
+      
+    </div>
+    <br><br>
+    <form action="/create_neighborhood" class="mb-3">
+        <input type="submit" class="btn btn-outline-info bg-info text-white rounded-pill b-text"
+            value="Add Your Neighborhood" />
+       </form>
+ 
+       
+            <div class="trial row">
+            {% for neighborhood in neighborhoods %}
+            <div class="col-md-4">
+                <div class="img">
+             
+                <div style="background-color: rgb(233, 232, 211);box-sizing: border-box; margin-top:2%;box-shadow: 0vh 0vh 1vh gainsboro;">
+    
+                    <div class="about">
+    
+                        <div class="row" style="padding-top: 1%">
+                            <div class="col-md-12">
+                                <h4 style="font-weight:600;">Name: <a style="color:rgb(53, 53, 245);"
+                                        
+                                        style="text-decoration: none;">{{neighborhood.name}}
+                                    </a></h4>
+    
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6" style="font-weight:600; font-size:18px"> Location: <span
+                                    style="color:rgb(53, 53, 245);">{{neighborhood.location}}</span>
+                            </div>
+                        </div>
+                        <div class="">
+                        
+                                <img src="{{neighborhood.photo.url}}" class="img-responsive"
+                                    alt="{{neighborhood.name}}" style="width:100%;width:100%">
+                            </a>
+                        </div>
+    
+                    </div>
+    
+    
+                </div>
+            </div>
+            </div>
+        </div>
+            {% endfor %}
+    
+    
+        </div>
+    </div>
+ </body>   
+<br><br><br>
+<!-- search option -->
+<div class="row">
+<div class="col-md-4">
+<form action="/search" class="mb-3">
+    <div class="form-group">
+        <input type="text" class="form-control mt-5 " placeholder="Search for a business">
+        <button type="submit"   class="btn btn-warning mt-1">SEARCH</button>
+      </div>
+   </form>
+</div>
+<!-- adding business -->
+<div class="col-md-4">
+<form action="/create_business" class="mb-3">
+    <input type="submit" class="btn btn-outline-info bg-info text-white rounded-pill b-text"
+        value="Add a business in your Neighborhood" />
+   </form>
+</div>
+<div class="col-md-4">
+    <form action="/create_post" class="mb-3">
+        <input type="submit" class="btn btn-outline-info bg-info text-white rounded-pill b-text"
+            value="Make a post" />
+       </form>
+</div>
+<div class="col-md-4">
+    <form action="/hood" class="mb-3">
+        <input type="submit" class="btn btn-outline-info bg-info text-white rounded-pill b-text"
+            value="View neighborhoods" />
+       </form>
+</div>
+</div>
+{%endblock%}
