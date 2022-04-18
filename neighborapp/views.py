@@ -12,7 +12,7 @@ from.forms import UpdateProfileForm,BusinessForm, NeighborhoodForm, PostForm
 
 
 #api views
-class NeighborhoodtList(APIView):
+class NeighborhoodList(APIView):
     def get(self, request, format=None):
         all_neighborhoods = Neighborhood.objects.all()
         serializers = NeighborhoodSerializer(all_neighborhoods, many=True)
@@ -184,13 +184,19 @@ class PostDescription(APIView):
 
 #create views here
 def index(request):
-    return render (request, 'index.html')
+    """
+    display all neighborhoods
+    """
+    neighborhoods = Neighborhood.objects.all
+   
+
+    return render(request, 'index.html', {'neighborhoods':neighborhoods})
 
 @login_required(login_url='/accounts/login')
 def profile(request):
     current_user = request.user
     profile = Profile.objects.filter(user_id=current_user.id).first()
-    return render(request, 'registration/profile.html', {"profile":profile})
+    return render(request, "registration/profile.html", {"profile":profile})
 
 def update_profile(request,id):
     user = User.objects.get(id=id)
@@ -203,7 +209,7 @@ def update_profile(request,id):
                 profile.save()
                 return redirect('profile') 
             
-    return render(request, 'registration/update_profile.html', {"form":form, "profile":profile, 'id':id})
+    return render(request, "registration/update_profile.html", {"form":form, "profile":profile, 'id':id})
 
 @login_required(login_url='/accounts/login/')
 def create_business(request):
@@ -258,8 +264,8 @@ def create_neighborhood(request):
 @login_required(login_url="/accounts/login/")
 def hood(request):
     current_user = request.user
-    hood = Neighborhood.objects.all().order_by('-id')
-    return render(request, 'hoods.html', {'hood': hood,'current_user':current_user})
+    neighborhoods = Neighborhood.objects.all().order_by('-id')
+    return render(request, 'hood.html', {'neighborhoods': neighborhoods,'current_user':current_user})
 
 @login_required(login_url='/accounts/login/')
 def one_hood(request,name):
@@ -305,7 +311,7 @@ def post(request):
     else:
         neighborhood = profile.neighborhood
         posts = Post.objects.all().order_by('-id')
-        return render(request, "posts.html", {"posts": posts})
+        return render(request, "post.html", {"posts": posts})
 
 @login_required(login_url="/accounts/login/")
 def search(request):
